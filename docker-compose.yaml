@@ -1,0 +1,39 @@
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "8080:8000" # Exposing backend directly on 8080 for debugging
+    networks:
+      - kong-net
+
+  kong:
+    image: kong:3.4-ubuntu
+    container_name: kong-gateway
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yaml"
+      KONG_PROXY_ACCESS_LOG: "/dev/stdout"
+      KONG_ADMIN_ACCESS_LOG: "/dev/stdout"
+      KONG_PROXY_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_ERROR_LOG: "/dev/stderr"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+      KONG_PLUGINS: "bundled,custom-header"
+      KONG_LUA_PACKAGE_PATH: "/opt/?.lua;;"
+    ports:
+      - "8000:8000" # Kong Proxy
+      - "8001:8001" # Kong Admin API
+    volumes:
+      - ./kong.yaml:/usr/local/kong/declarative/kong.yaml
+      - ./handler.lua:/opt/kong/plugins/custom-header/handler.lua
+      - ./schema.lua:/opt/kong/plugins/custom-header/schema.lua
+    networks:
+      - kong-net
+    depends_on:
+      - user-service
+
+networks:
+  kong-net:
+    driver: bridge
