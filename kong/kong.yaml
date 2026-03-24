@@ -9,9 +9,11 @@ services:
           - /health
           - /login
           - /verify
+        strip_path: false
       - name: protected-routes
         paths:
           - /users
+        strip_path: false
         plugins:
           - name: jwt
             config:

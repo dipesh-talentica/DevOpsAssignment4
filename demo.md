@@ -8,8 +8,8 @@ This document provides step-by-step instructions to demonstrate the Secure API P
 Ensure you are in the root directory of the project and your terminal is ready.
 
 ```bash
-# Start the environment
-docker-compose up --build -d
+# Forward the Kong proxy port to your local machine (run in a separate terminal)
+kubectl port-forward svc/kong-kong-proxy 8000:80
 ```
 *Explain to the customer: "We are spinning up the FastAPI microservice and the Kong API Gateway. Kong is running in DB-less mode using a declarative configuration."*
 
@@ -93,8 +93,11 @@ for i in {1..12}; do curl -s -o /dev/null -w "Request $i: %{http_code}\n" http:/
 
 **Command:**
 ```bash
-# Restart Kong to apply the new declarative config
-docker restart kong-gateway
+# Update the ConfigMap with the new kong.yaml
+kubectl create configmap kong-declarative-config --from-file=kong.yml=kong.yaml -o yaml --dry-run=client | kubectl apply -f -
+
+# Restart the Kong pod to pick up the new configuration
+kubectl delete pod -l app.kubernetes.io/name=kong
 ```
 
 **Test the restriction:**
