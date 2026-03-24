@@ -240,9 +240,9 @@ AI was instrumental in:
 5. **Best Practices** - Password hashing, error handling, logging
 
 ### Time Savings
-- **Estimated Manual Development Time:** 20-30 hours
-- **Actual Development Time with AI:** 4-6 hours
-- **Time Saved:** ~75-80%
+- **Estimated Manual Development Time:** 40-50 hours
+- **Actual Development Time with AI:** 8-10 hours
+- **Time Saved:** ~70-80%
 
 ### Quality Improvements
 - Production-ready code with proper error handling
