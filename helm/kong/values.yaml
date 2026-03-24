@@ -1,0 +1,16 @@
+env:
+  database: "off"
+  plugins: "bundled,custom-header"
+  lua_package_path: "/opt/?.lua;;"
+
+ingressController:
+  enabled: false
+
+dblessConfig:
+  configMap: kong-declarative-config
+
+# Mount custom Lua plugins
+plugins:
+  configMaps:
+    - name: custom-header-plugin
+      pluginName: custom-header
